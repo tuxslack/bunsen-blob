@@ -1,3 +1,10 @@
+bunsen-blob (12.5.3-1) boron; urgency=medium
+
+  * [samwhelp] Bugfix: correctly escape semicolons in bl-obthemes.
+  * Rename Boron-Darkred tint2 file including "horizontal".
+
+ -- John Crawley <john@bunsenlabs.org>  Sun, 07 Apr 2024 14:44:33 +0900
+
 bunsen-blob (12.5.2-1) boron; urgency=medium
 
   * Bugfix: correct package name bunsen-images-archives
