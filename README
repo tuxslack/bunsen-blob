@@ -1,4 +1,4 @@
-bunsen-blob
+bl-obthemes
 ===========
 
 BLOB is a BunsenLabs GUI Themes Manager
@@ -8,16 +8,20 @@ The command to run is bl-obthemes
 
 Save options are for:
 		Openbox theme
+                FluxBox theme
+                Plank theme
 		GTK theme
 		Icon theme
+                Rofi theme
+                obmenu-generator
 		Conky(s)
 		Tint2(s)
 		Background (using nitrogen, feh, xfdesktop or pcmanfm)
 		Alt Menu (dmenu)
-		Lightdm login gtk greeter
+		SDDM / Lightdm
 		X configs (.bashrc, .Xresources)
 		Terminal emulator config (if available)
-		Compositor (if available)
+		Compositor - Picom (if available)
 		Jgmenu theming (if available)
 
 Paths are assumed to be BunsenLabs defaults.
@@ -43,3 +47,11 @@ and use the "Enter" key in the "Configurations to be saved:" dialog.
 
 Conkys in non-default directories can be saved,
 but might not be seen when running bl-conky-manager.
+
+****************************************************************************
+
+The bl-obthemes folder is used to install this theme manager on Linux distributions other than Debian.
+Tested on Void Linux with OpenBox and FluxBox.
+
+Themes:
+https://github.com/tuxslack/bunsen-blob
