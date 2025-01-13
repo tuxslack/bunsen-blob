@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=Bl-Obthemes debug
+Comment=Bl-Obthemes com debug
+Exec=/usr/local/bin/bl-obthemes.sh -v
+Icon=distributor-logo-bunsenlabs
+Terminal=true
+Type=Application
+
+Keywords=openbox;conky;tint2;gtk;wallpaper;preferences;settings;theme;style;appearance;bl-obthemes;blobthemes;debug;customizacao;tema;icons;icones;
+
+Categories=GTK;Settings;DesktopSettings;
+
+

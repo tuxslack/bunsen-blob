@@ -1,0 +1,184 @@
+[Desktop Entry]
+Version=1.0
+Name=BLOB Theme Manager
+Name[bs]=
+Name[ca]=
+Name[cs]=
+Name[da]=
+Name[de]=
+Name[el]=
+Name[en_GB]=BLOB Theme Manager
+Name[eo]=
+Name[es]=Administrador de temas BLOB
+Name[fi]=BLOB-teemapäällikkö
+Name[fr]=Gestionnaire de thèmes BLOB
+Name[gl]=
+Name[he]=
+Name[hu]=BLOB témakezelő
+Name[id]=
+Name[it]=Gestore temi BLOB
+Name[ja]=BLOB テーマ マネージャー
+Name[ko]=
+Name[lv]=
+Name[nb]=
+Name[nl]=
+Name[pl]=Menedżer motywów BLOB
+Name[pt]=Gestor de temas BLOB
+Name[pt_BR]=Gerenciador de temas BLOB
+Name[ru]=Менеджер тем BLOB-объектов
+Name[sk]=
+Name[sr@latin]=
+Name[sv]=
+Name[th]=
+Name[tr]=
+Name[uk]=Менеджер тем BLOB
+Name[vi]=
+Name[zh_CN]=
+Name[zh_TW]=
+
+
+
+GenericName=BLOB Theme Manager
+GenericName[ar]=
+GenericName[bg]=
+GenericName[ca]=
+GenericName[cs]=
+GenericName[da]=
+GenericName[de]=
+GenericName[el]=
+GenericName[en_GB]=BLOB Theme Manager
+GenericName[es]=Administrador de temas BLOB
+GenericName[et]=
+GenericName[fi]=BLOB-teemapäällikkö
+GenericName[fr]=Gestionnaire de thèmes BLOB
+GenericName[gu]=
+GenericName[he]=
+GenericName[hi]=
+GenericName[hu]=BLOB témakezelő
+GenericName[it]=Gestore temi BLOB
+GenericName[ja]=BLOB テーマ マネージャー
+GenericName[kn]=
+GenericName[ko]=
+GenericName[lt]=
+GenericName[lv]=
+GenericName[ml]=
+GenericName[mr]=
+GenericName[nb]=
+GenericName[nl]=
+GenericName[pl]=Menedżer motywów BLOB
+GenericName[pt]=Gestor de temas BLOB
+GenericName[pt_BR]=Gerenciador de temas BLOB
+GenericName[ro]=
+GenericName[ru]=Менеджер тем BLOB-объектов
+GenericName[sl]=
+GenericName[sv]=
+GenericName[ta]=
+GenericName[th]=
+GenericName[tr]=
+GenericName[uk]=Менеджер тем BLOB
+GenericName[zh_CN]=
+GenericName[zh_HK]=
+GenericName[zh_TW]=
+GenericName[bn]=
+GenericName[fil]=
+GenericName[hr]=
+GenericName[id]=
+GenericName[or]=
+GenericName[sk]=
+GenericName[sr]=
+GenericName[te]=
+GenericName[vi]=
+
+
+Comment=Save or restore a GUI theme settings package.
+Comment[ar]=
+Comment[bg]=
+Comment[bn]=
+Comment[ca]=
+Comment[cs]=
+Comment[da]=
+Comment[de]=Speichern oder wiederherstellen Sie ein GUI-Design-Einstellungspaket.
+Comment[el]=Αποθηκεύστε ή επαναφέρετε ένα πακέτο ρυθμίσεων θέματος GUI.
+Comment[en_GB]=Save or restore a GUI theme settings package.
+Comment[es]=Guarde o restaure un paquete de configuración de tema GUI.
+Comment[et]=
+Comment[fi]=Tallenna tai palauta GUI-teeman asetuspaketti.
+Comment[fil]=
+Comment[fr]=Enregistrez ou restaurez un package de paramètres de thème GUI.
+Comment[gu]=
+Comment[he]=
+Comment[hi]=
+Comment[hr]=
+Comment[hu]=Mentse vagy állítsa vissza a GUI-téma beállítási csomagját.
+Comment[id]=
+Comment[it]=Salva o ripristina un pacchetto di impostazioni del tema della GUI.
+Comment[ja]=GUI テーマ設定パッケージを保存または復元します。
+Comment[kn]=
+Comment[ko]=
+Comment[lt]=
+Comment[lv]=
+Comment[ml]=
+Comment[mr]=
+Comment[nb]=
+Comment[nl]=
+Comment[or]=
+Comment[pl]=Zapisz lub przywróć pakiet ustawień motywu GUI.
+Comment[pt]=Guarde ou restaure um pacote de definições de tema GUI.
+Comment[pt_BR]=Salve ou restaure um pacote de configurações de tema GUI.
+Comment[ro]=
+Comment[ru]=Сохраните или восстановите пакет настроек темы графического интерфейса.
+Comment[sk]=
+Comment[sl]=
+Comment[sr]=
+Comment[sv]=
+Comment[ta]=
+Comment[te]=
+Comment[th]=
+Comment[tr]=
+Comment[uk]=Збережіть або відновіть пакет налаштувань теми GUI.
+Comment[vi]=
+Comment[zh_CN]=
+Comment[zh_HK]=
+Comment[zh_TW]=
+
+
+Keywords=openbox;conky;tint2;gtk;wallpaper;preferences;settings;theme;style;appearance;bl-obthemes;blobthemes;customizacao;tema;icons;icones;
+
+Icon=distributor-logo-bunsenlabs
+
+Exec=/usr/local/bin/bl-obthemes.sh
+
+Terminal=false
+
+StartupNotify=false
+
+Type=Application
+
+Categories=GTK;Settings;DesktopSettings;
+
+
+
+
+# Tem como criar dois atalhos com ações diferentes usando o mesmo arquivo .desktop no Linux?
+
+
+# No caso do Openbox, a implementação de ações personalizadas em arquivos .desktop pode não ser suportada da mesma forma que em outros ambientes de desktop como GNOME ou KDE. O padrão Actions de arquivos .desktop é mais comum em ambientes como GNOME e KDE, onde o menu de contexto do ícone permite ao usuário escolher ações alternativas. No entanto, o Openbox não oferece suporte nativo para esse recurso no formato tradicional de ações dentro de um arquivo .desktop.
+
+# Teste a ação no Openbox: O Openbox pode não reconhecer as ações adicionais. Mesmo que o formato esteja correto, o comportamento esperado pode não ser aplicado. Uma solução alternativa é criar um script separado para as ações e criar um atalho para cada uma delas.
+
+
+# o suporte a ações adicionais em arquivos .desktop também funciona no Xfce, que é baseado no padrão do freedesktop.org e suporta o formato de ações adicionais com o campo Actions em arquivos .desktop. Então, ao usar o Xfce, você pode definir ações alternativas no menu de contexto (botão direito) de um ícone, similar ao que ocorre em GNOME ou KDE.
+
+
+# Ações adicionais
+# Actions=debug;
+
+# [Desktop Action debug]
+
+# Name[pt_BR]=bl-obthemes1 debug
+# Comment=Bl-Obthemes com opção de debug
+# Terminal=true
+# Exec=/usr/local/bin/bl-obthemes.sh -v
+# Icon=distributor-logo-bunsenlabs
+
+
