@@ -4,7 +4,7 @@ bl-obthemes
 BLOB is a BunsenLabs GUI Themes Manager
 to save or restore various GUI theme settings.
 
-The command to run is bl-obthemes
+The command to run is bl-obthemes.sh
 
 Save options are for:
 		Openbox theme
@@ -31,15 +31,16 @@ A Screenshot is saved (Windows are hidden briefly so the image
                        or Conkys which are running, and a representive
                        menu and lxappearance open)
 
-User saved themes are stored in ~/.config/blob.
-Some system preset themes are stored in /usr/share/bunsen/utilities/blob.
+User saved themes are stored in ~/.config/bl-obthemes.
+Some system preset themes are stored in /usr/share/themes.
 The contents of that directory will be displayed to the user
-along with any that might be in ~/.config/blob.
+along with any that might be in ~/.config/bl-obthemes.
 If a user and preset theme have identical names,
 the system preset will be hidden.
 
 ****************************************************************************
 KNOWN ISSUES:
+
 Virtualbox does not let the guest move the host mouse cursor with xdotool,
 so the screenshot may display the theme incorrectly or with poor positioning.
 A workaround is to move the cursor to some free space,
