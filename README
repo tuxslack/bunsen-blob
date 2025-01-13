@@ -51,8 +51,15 @@ but might not be seen when running bl-conky-manager.
 
 ****************************************************************************
 
+Fork of bunsen-blob:
+https://github.com/BunsenLabs/bunsen-blob
+
+
 The bl-obthemes folder is used to install this theme manager on Linux distributions other than Debian.
 Tested on Void Linux with OpenBox and FluxBox.
 
+![](https://github.com/tuxslack/bl-obthemes/blob/boron/bl-obthemes/bl-obthemes-0.jpeg)
+
+
 Themes:
-https://github.com/tuxslack/bunsen-blob
+https://github.com/tuxslack/bunsen-themes
