@@ -4885,6 +4885,7 @@ function getBg(){  # Descubra se feh, Nitrogen ou outro foi usado. Salve o(s) ar
 # ----------------------------------------------------------------------------------------
 
 # NITROFILE é uma configuração global
+#
 # CONFIGDIR é um conjunto global definido por setName()
 
 
@@ -4917,11 +4918,11 @@ $(gettext 'Nitrogen defined backgrounds, using:') $img $(gettext 'in') $CONFIGDI
     cp "$img"  $CONFIGDIR/user/.config/nitrogen/
 
 
-    debug "\n$(gettext 'Funds defined with Feh, using:')\t$CONFIGDIR/user/$NITROFILE"
+    debug "\n$(gettext 'Nitrogen defined backgrounds, using:')\t$CONFIGDIR/user/$NITROFILE"
 
     debug "$imglist"
 
-    echo -e "$(gettext 'Background set with Feh:')\n\t$imglist\n" >> "$LISTMSG"
+    echo -e "$(gettext 'Background set with Nitrogen:')\n\t$imglist\n" >> "$LISTMSG"
 
 
 }
@@ -4961,7 +4962,7 @@ function getFeh(){    # Obter fundos salvos do Feh
     # Salvando o papel de parede com base no arquivo ~/.fehbg
 
 echo "
-$(gettext 'Nitrogen defined backgrounds, using:') $img $(gettext 'in') $CONFIGDIR/user/.config/Feh/
+$(gettext 'Funds defined with Feh, using:') $img $(gettext 'in') $CONFIGDIR/user/.config/Feh/
 "
 
     mkdir -p $CONFIGDIR/user/.config/Feh/
@@ -13348,11 +13349,9 @@ retorno=$(yad \
 "$(gettext 'Exit')" "1" \
 --separator="|" \
 --no-buttons \
-# --buttons-layout=center \
-# --button="$(gettext 'Cancel')":1 \
-# --button="$(gettext 'OK')" \
---width="580" --height="400" \
+--width="600" --height="300" \
 2> /dev/null)
+
 
 
 
