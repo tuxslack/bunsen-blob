@@ -666,8 +666,13 @@ check_program "gthumb"             "$(gettext 'gThumb program is not installed.'
 # Compositor leve para X11 (anteriormente um fork Compton)
 check_program "picom"              "$(gettext 'Picom program is not installed.')"
 
+
 # Painel Tint2
+
 check_program "tint2"              "$(gettext 'Tint2 program is not installed.')"
+
+check_program "tint2conf"          "$(gettext 'tint2conf program is not installed.')"
+
 
 # obmenu-generator
 check_program "obmenu-generator"   "$(gettext 'obmenu-generator program is not installed.')"
@@ -751,6 +756,11 @@ check_program "convert"               "$(gettext 'convert (part of ImageMagick) 
 
 check_program "cp"                    "$(gettext 'cp program is not installed.')"
 
+
+check_program "xrandr"                "$(gettext 'xrandr program is not installed.')"
+
+
+# check_program "polybar"               "$(gettext 'polybar program is not installed.')"
 
 
 # ----------------------------------------------------------------------------------------
@@ -1825,6 +1835,7 @@ $(gettext '    GTK Theme')
 $(gettext '    Conkys')
 $(gettext '    Tint2')
 $(gettext '    Plank')
+    $(gettext 'Polybar')
 $(gettext '    obmenu-generator')
 $(gettext '    Desktop background')
 $(gettext '    Alternative menu (dmenu)')
@@ -2034,11 +2045,12 @@ $(gettext 'No other CLI options are supported.')
 $(gettext 'Save options:')
 
 $(gettext '            Conky(s)')
-$(gettext '            Tint2(s)')
 $(gettext '            Openbox theme')
             $(gettext 'Fluxbox Theme')
 $(gettext '            GTK theme')
+$(gettext '            Tint2(s)')
 $(gettext '            Plank')
+            $(gettext 'Polybar')
 $(gettext '            obmenu-generator')
 $(gettext '            Background')
 $(gettext '            (uses Nitrogen or feh, depending which has the newer saved bg config file)')
@@ -3188,6 +3200,18 @@ FORKWAIT='0.3' # time to wait before checking if a forked process is still runni
 HOME_MARKER='%USERHOME%'
 
 
+
+
+# As configurações do Polybar geralmente ficam salvas em um arquivo de configuração 
+# localizado no diretório do usuário. O arquivo padrão de configuração do Polybar 
+# pode ser encontrado em: ~/.config/polybar/config
+
+POLYBARPATH='.config/polybar/config.ini'
+
+# Esse arquivo contém as definições e personalizações da sua barra, como módulos, 
+# aparência, cores, fontes, etc.
+
+
 # ----------------------------------------------------------------------------------------
 
 # Estilo:
@@ -3379,6 +3403,7 @@ PICKBG="$(gettext 'Wallpaper')"
 PICKCONKY="$(gettext 'Conky')"
 PICKTINT="$(gettext 'Tint2')"
 PICKPLANK="$(gettext 'Plank')"
+PICKPOLYBAR="$(gettext 'Polybar')"
 PICKDMENU="$(gettext 'dmenu (Alternative menu)')"
 PICKROFI="$(gettext 'Rofi Menu Theme')"
 PICKLDM="$(gettext 'Lightdm Login Theme')"
@@ -3593,7 +3618,7 @@ fi
 
     # Verifica se "fluxbox" aparece como uma palavra isolada (com espaços antes)
 
-    [[ $obline =~ --startup[[:blank:]]+([^[:blank:]]+) || $obline =~ [[:space:]](fluxbox) ]] || {
+    [[ $obline =~ --startup[[:blank:]]+([^[:blank:]]+) || $obline =~ [[:space:]](fluxbox) || $obline =~ [[:space:]](i3) ]] || {
 
 
     # [[ $obline =~ --start[[:blank:]]+([a-zA-Z0-9\-]+) ]] || {
@@ -3790,6 +3815,121 @@ fi
 
 
 
+
+
+# ----------------------------------------------------------------------------------------
+
+# Para identificar se o usuário está usando o Xorg ou Wayland.
+
+# Verificar se a variável de ambiente DISPLAY está configurada (tipicamente usada no Xorg)
+
+
+function verificar_DISPLAY(){
+
+
+# Como funciona:
+# 
+# $DISPLAY: Essa variável é configurada pelo servidor gráfico. Quando você está usando 
+# o Xorg, a variável $DISPLAY normalmente tem um valor como :0 ou :1. Caso esteja usando 
+# o Wayland, essa variável geralmente não estará configurada.
+# 
+# $WAYLAND_DISPLAY: Esta variável de ambiente é configurada quando você está usando 
+# Wayland. Ela tem um valor como wayland-0 ou algo semelhante.
+#
+#
+# Explicação da função:
+# 
+#   A função verifica primeiro se a variável de ambiente $DISPLAY está configurada, o que 
+# indica que o servidor gráfico está sendo utilizado.
+#
+#   Se $DISPLAY estiver configurado, o script verifica se a variável $WAYLAND_DISPLAY está 
+# vazia. Se estiver vazia, é provável que o servidor gráfico seja o Xorg.
+#
+#   Se $WAYLAND_DISPLAY não estiver vazia, o servidor gráfico em uso provavelmente é o Wayland.
+#
+#   Se $DISPLAY não estiver configurado, isso pode indicar que não há um servidor gráfico 
+# ativo ou o script está sendo executado fora de um ambiente gráfico.
+
+
+if [ -n "$DISPLAY" ]; then
+
+
+    # Verifica se a variável $WAYLAND_DISPLAY não está configurada
+
+    if [ -z "$WAYLAND_DISPLAY" ]; then
+
+        echo -e "\n${GREEN}$(gettext 'You are using Xorg.') ${NC} \n"
+
+# Xorg: O Xorg fornece uma API baseada em X11, onde os scripts interagem com o servidor gráfico por meio de comandos como xrandr, xset, xwininfo, etc.
+
+# Xorg: No Xorg, scripts podem usar ferramentas como wmctrl, xdotool ou xwininfo para manipular janelas, como mover, redimensionar ou maximizar.
+
+# No Xorg, você pode usar ferramentas como xinput para configurar dispositivos de entrada, como mouses e teclados.
+
+# Xorg: Os scripts no Xorg frequentemente dependem da variável de ambiente $DISPLAY para identificar o servidor gráfico em uso. O valor dessa variável é algo como :0 ou :1.
+
+# O gerenciamento de múltiplas telas pode ser feito com xrandr para configurar resoluções, orientações e configurações de saída.
+
+# O Xorg tem muitas ferramentas gráficas específicas, como xev (para capturar eventos de entrada), xwininfo (para obter informações sobre janelas) e xdotool (para automatizar interações com a interface).
+
+
+
+    else
+
+        echo -e "\n${GREEN}$(gettext 'You are using Wayland.') ${NC} \n"
+
+# O Wayland não oferece as mesmas ferramentas ou APIs diretamente. Muitas das ferramentas específicas do Xorg, como xrandr e xset, não funcionam no Wayland. Para interagir com o Wayland, você precisará usar ferramentas e comandos específicos do compositor do Wayland, como:
+
+#     wlr-randr (para Wayland com wlroots)
+#     wayland-info ou swaymsg (para Sway)
+#     weston (para o compositor Weston)
+#     sway, se você estiver usando o compositor Sway (um dos mais populares no Wayland).
+
+# Se o script usar comandos como xrandr para configurar displays, você precisará substituí-los por alternativas específicas para Wayland, como o comando de configuração de saída do Sway swaymsg output ou o wlr-randr para Wayland com wlroots.
+
+# Wayland: Muitos desses comandos não têm equivalente direto no Wayland. Em vez disso, você pode usar ferramentas do compositor, como swaymsg (para Sway) ou weston-control (para Weston). Se o script precisar configurar opções como a taxa de atualização do monitor ou o brilho, você deverá procurar alternativas no compositor utilizado.
+
+
+# No Wayland, esses scripts geralmente não funcionarão, pois a manipulação de janelas é delegada ao compositor (como Sway ou GNOME Shell). Em vez de wmctrl ou xdotool, você precisará usar comandos específicos do compositor para gerenciar as janelas:
+
+#    Sway: swaymsg para mover, redimensionar ou focar janelas.
+
+#     O Wayland não fornece um equivalente direto a xinput. A configuração de dispositivos de entrada é feita pelo compositor. Por exemplo, no Sway, você pode configurar dispositivos de entrada no arquivo de configuração (~/.config/sway/config), e em outros compositores, há alternativas específicas para isso. No entanto, o Wayland em si não tem um comando único e global como o xinput.
+
+# No Wayland, o $DISPLAY geralmente não está presente ou tem um valor diferente. Em vez disso, o Wayland usa um método de comunicação diferente (como WAYLAND_DISPLAY para o compositor). Portanto, um script que dependa de $DISPLAY pode precisar ser modificado para considerar que o Wayland não define essa variável da mesma forma.
+
+# A configuração de múltiplos monitores no Wayland depende do compositor. Com Sway, por exemplo, você configuraria as saídas no arquivo de configuração (~/.config/sway/config). Não há um comando universal como xrandr para o Wayland, então você precisaria usar o comando adequado para o compositor específico, como swaymsg para alterar as configurações de saída.
+
+# Muitas dessas ferramentas não têm equivalente no Wayland, ou não funcionam da mesma forma. Para capturar eventos ou fazer automação no Wayland, você pode ter que procurar alternativas como ydotool ou outros scripts específicos do compositor.
+
+
+
+    fi
+
+
+else
+
+    echo "$(gettext 'Unable to determine graphics server.')"
+
+    exit
+fi
+
+
+# Exemplos de modificações
+
+#     Substituindo xrandr:
+#         Se o script usa xrandr para ajustar as configurações de saída, em um ambiente Wayland você precisará usar ferramentas específicas do compositor, como wlr-randr (para wlroots-based compositors) ou swaymsg (para Sway).
+
+#     Substituindo wmctrl ou xdotool:
+#         Para manipular janelas, você deverá usar comandos do compositor, como swaymsg para Sway ou comandos internos no GNOME Shell ou KDE Plasma.
+
+
+}
+
+
+# Fornecerá a informação sobre qual servidor gráfico está sendo usado no momento.
+
+verificar_DISPLAY
 
 
 
@@ -4223,6 +4363,14 @@ dconf dump /net/launchpad/plank/docks/ > $i/user/.config/plank/docks.ini
 
                                     ;;
 
+                "[POLYBAR]"      )   moveFile "$i/config/polybar/config" "$i/user/.config/polybar/" && {
+
+                                     printf '%s %s\n' "$TAG" "$VAL" >> "$i/newsettings"
+
+                                    }
+
+                                    ;;
+
                 '['*']'         )   printf '%s %s\n' "$TAG" "$VAL" >> "$i/newsettings"
 
                                     ;;
@@ -4304,7 +4452,7 @@ parseKeyfile(){
 #    A função verifica se o argumento $1 (que é o nome do arquivo a ser lido) é um arquivo regular usando [[ -f $1 ]].
 #    Se não for um arquivo válido, a função exibe uma mensagem de erro e retorna com o código de erro 1.
 
-    [[ -f $1 ]] || { echo "$1 $(gettext 'is not a file.')" >&2; return 1;}
+    [[ -f $1 ]] || { echo "$1 ${RED}$(gettext 'is not a file.') ${NC}" >&2; return 1;}
 
 
     # Limpeza e declaração da variável KEYS:
@@ -4402,57 +4550,96 @@ parseKeyfile(){
 editKeyfile(){
 
     local type=gtk3 file bkp_file name value sed_pattern sed_replace sed_args
+
     [[ $1 = '--gtk2' ]] && {
+
         type=gtk2
+
         shift
     }
-    [[ -f $1 ]] || { echo "$1 $(gettext 'is not a file.')" >&2; return 1;}
+
+    [[ -f $1 ]] || { echo "$1 ${RED}$(gettext 'is not a file.') ${NC}" >&2; return 1;}
+
+
     file=$1
+
     shift
-    parseKeyfile "$file" || { echo "$0: editKeyfile() Falha ao analisar ${file}." 2>&1; return 1;} # gera CHAVES globais para as duas verificações
-    boolean_enum_re='^([01]|GTK_[[:upper:]_]*)$' # nos arquivos GTK2 gtkrc esses valores não são citados
+
+    message=$(gettext 'editKeyfile() Failed to parse %s.')
+
+    parseKeyfile "$file" || { echo "$0: ${RED}$(printf "$message" "${file}" ) ${NC}" 2>&1; return 1;} # Gera CHAVES globais para as duas verificações
+
+
+    boolean_enum_re='^([01]|GTK_[[:upper:]_]*)$' # Nos arquivos GTK2 gtkrc esses valores não são citados
+
     sed_args=()
+
     while [[ $1 ]]; do
+
         unset name value sed_pattern sed_replace
+
         name="${1%%=*}"
+
         value="${1#*=}"
+
         shift
+
         [[ -v KEYS["$name"] ]] || {
-            echo "$0: a chave de configuração $name não existe" >&2
+
+            message=$(gettext 'configuration key %s does not exist.')
+
+            echo -e "\n$0: ${RED}$(printf "$message"  "$name" ) ${NC} \n"  >&2
+
             return 1
         }
+
         [[ ${KEYS["$name"]} = "${value}" ]] && {
-            debug "A chave KEYS[$name] já está definida como ${value}"
+
+            message=$(gettext 'The key KEYS[%s] is already set to %s')
+
+            debug "$(printf "$message"  "$name" "${value}" )"
+
             continue
         }
+
         [[ $type = gtk2 ]] && {
+
             [[ $value =~ $boolean_enum_re ]] || { # strings de citação para arquivo gtk2
                 value="\"$value\""
             }
         }
+
         (( ${#sed_args[@]} == 0 )) && sed_args=("-ri")
         sed_pattern="^[[:blank:]]*${name}[[:blank:]]*=[[:blank:]]*('[^']+'|\"[^\"]+\"|[^#[:blank:]]+([[:blank:]]+[^#[:blank:]]+)*)[[:blank:]]*(#.*)*$"
         sed_replace+="${name}=${value}"
         sed_args+=("-e")
         sed_args+=("s/$sed_pattern/$sed_replace/")
     done
+
     unset KEYS
+
     (( ${#sed_args[@]} )) && {
         needBackup "${file}" && {
             bkp_file="${file}${BKP_SFX}"
+
             cp "$file" "$bkp_file" || return 1
+
             debug "$(gettext 'Made a backup of') $file"
         }
-        sed "${sed_args[@]}" "$file" || { echo "$0: $(gettext 'sed error')" >&2; return 1;}
+
+        sed "${sed_args[@]}" "$file" || { echo "$0: ${RED}$(gettext 'sed error') ${NC}" >&2; return 1;}
     }
+
     return 0
 }
 
 
-# define os globais NUMDIRS e CURRENTSESSION, dentro de intro() e UpdateDisplayDialog()
+# Define os globais NUMDIRS e CURRENTSESSION, dentro de intro() e UpdateDisplayDialog()
 
-function getCurrent(){      # obter o nome da configuração BLOB definida atualmente
+function getCurrent(){      # Obter o nome da configuração BLOB definida atualmente
+
     local dirs
+
     NUMDIRS=0
     shopt -s nullglob
     dirs=( "$USRCONFIGPATH"/*/ "$SYSCONFIGPATH"/*/ )
@@ -4591,6 +4778,7 @@ function setName(){  # Definir nome da coleção, criar diretório e arquivo de 
     msg2="  $(gettext 'No file specified for new saved session.\n\n  Try again?')"
 
     local del time txt
+
     del=0
 
     while true;do  # diálogo de loop se nada for selecionado
@@ -4717,7 +4905,8 @@ function saveFileAbs(){
 
     [[ -r $src_file ]] || {
 
-        echo "$0: $(gettext 'Cannot read source file') $src_file" >&2
+        echo "$0: ${RED}$(gettext 'Cannot read source file') $src_file  ${NC}" >&2
+
         return 1
 
     }
@@ -4726,7 +4915,8 @@ function saveFileAbs(){
 
     [[ $target_file = $CONFIGDIR/* ]] || {
 
-        echo "$0: $(gettext 'The target is not within') $CONFIGDIR" >&2
+        echo "$0: ${RED}$(gettext 'The target is not within') $CONFIGDIR ${NC}" >&2
+
         return 1
     }
 
@@ -4735,11 +4925,21 @@ function saveFileAbs(){
     mkdir -p "$target_dir" || return 1
 
     if [[ -d $src_file ]];then
+
         cp -r "$src_file" "$target_file" || return 1
-        debug "diretório $src_file e conteúdo salvo em $target_dir"
+
+        message=$(gettext 'Directory %s and content saved in %s')
+
+        debug "$(printf "$message"  "$src_file" "$target_dir")"
+
     else
+
         cp "$src_file" "$target_file" || return 1
-        debug "arquivo $src_file salvo em $target_dir"
+
+        message=$(gettext 'File %s saved in %s')
+
+        debug "$(printf "$message"  "$src_file" "$target_dir" )"
+
     fi
 }
 
@@ -4749,21 +4949,39 @@ function saveFileAbs(){
 
 # CONFIGDIR é um conjunto global definido por setName()
 
-function saveDconf(){ # passed dconf directory as #1 and name of app (for dumpfile) as $2
+function saveDconf(){ # Passou o diretório dconf como #1 e o nome do aplicativo (para dumpfile) como $2
+
     local dconfdir appname dumpfile
+
     dconfdir=$1
+
     appname=$2
+
     mkdir -p "$CONFIGDIR/dconf" || return 1
-    dumpfile="$CONFIGDIR/dconf/${appname// /_}" # remove any spaces from name
+
+    dumpfile="$CONFIGDIR/dconf/${appname// /_}" # Remova todos os espaços do nome
+
     dconf dump "$dconfdir" > "$dumpfile" || return 1
+
     if [[ -s $dumpfile ]]
     then
-        debug "Saved dconf $dconfdir to $dumpfile"
+
+        message=$(gettext 'Saved dconf %s to %s')
+
+        debug "$(printf "$message"  "$dconfdir" "$dumpfile" )"
+
+
     elif [[ -e $dumpfile ]]
     then
-        debug "dconf $dconfdir is default, created empty file $dumpfile"
+
+        message=$(gettext 'dconf %s is default, created empty file %s.')
+
+        debug "$(printf "$message"  "$dconfdir" "$dumpfile" )"
+
     else
+
         "$0: $(gettext 'failed to create') $dumpfile" >&2
+
         return 1
     fi
 }
@@ -4801,14 +5019,16 @@ function newest() {
 
 # ----------------------------------------------------------------------------------------
 
-function getBg(){  # Descubra se feh, Nitrogen ou outro foi usado. Salve o(s) arquivo(s) de configuração, se possível.
+function getBg(){  # Descubra se Feh, Nitrogen ou outro foi usado. Salve o(s) arquivo(s) de configuração, se possível.
 
     local bgsetter='' bgsetterfile img # img é definido pelas funções get* filhas
 
     bgsetter=$(checkBgDaemon) || debug "$(gettext 'No background configuration daemon running')"
 
     [[ -z $bgsetter ]] && {
+
         if bgsetterfile="$( newest "$HOME/$NITROFILE" "$HOME/$FEHFILE" )"; then
+
             case $bgsetterfile in
             "$HOME/$NITROFILE")
                 bgsetter=NITROGEN
@@ -4817,12 +5037,14 @@ function getBg(){  # Descubra se feh, Nitrogen ou outro foi usado. Salve o(s) ar
                 bgsetter=FEH
                 ;;
             esac
+
         else
             
-            echo -e "\n$0: ${RED} xxxxxxxxxxxx ${NC} \n" >&2
+            echo -e "\n$0: ${RED} $(gettext 'No Nitrogen or Feh files found.') ${NC} \n" >&2
 
             bgsetter="None"
         fi
+
     }
 
 
@@ -5250,12 +5472,16 @@ function getConky(){
             echo "$conkyline" >> "$saved_conkysession"
             debug "Adicionado '$conkyline' ao arquivo conkysession salvo"
         fi
+
     done
+
     ((save)) && {
         echo "[CONKY] $CONKYCMDS" >> "$SETTINGS" # semicolon-delimited list CONKYCMDS is now only a fallback in case sessionfile is missing
         echo -e "$(gettext 'Running Conkys'):\t$CONKYTXT\n" >> "$LISTMSG"
     }
+
     debug "\n  $(gettext 'Conky(s) running saved')\n"
+
 }
 
 
@@ -5371,6 +5597,7 @@ function getPlank(){
 # Salva os lançadores do Plank ~/.config/plank/dock1/launchers/
 
     local txt
+
     saveFiles "$PLANKPATH" || {
         echo "$0: $(gettext 'Failed to save Plank configuration file') $PLANKPATH" >&2
         return 1
@@ -5386,6 +5613,91 @@ function getPlank(){
 
 # Salvar o tema do Plank ~/.local/share/plank/themes/ que o usuário esta usando atualmente.
 
+
+
+}
+
+# ----------------------------------------------------------------------------------------
+
+
+function getPolybar(){
+
+
+# O aviso Naming your configuration file 'config' is deprecated, the expected name is 
+# 'config.ini'. está informando que, a partir das versões mais recentes do Polybar, 
+# o nome recomendado para o arquivo de configuração passou a ser config.ini, ao invés 
+# de config.
+
+
+
+# Só salva se o processo do Polybar estiver rodando para o usuário atual.
+
+ pgrep -fx "polybar" -u "$USER" >/dev/null || {
+
+        echo -e "\n$0: ${RED} $(gettext 'Polybar is not running.') ${NC} \n"  >&2
+
+        return 1
+
+    }
+
+
+# Verifica se a pasta existe
+
+if [ -d "$HOME/.config/polybar" ]; then
+
+    # A pasta $HOME/.config/polybar existe.
+
+    ls -lh $HOME/.config/polybar
+
+
+
+
+
+# Verifica se o arquivo existe
+
+if [ -f "$HOME/$POLYBARPATH" ]; then
+
+    # O arquivo $HOME/$POLYBARPATH existe.
+
+
+
+
+# Salva o arquivo de configuração do Polybar $HOME/$POLYBARPATH
+
+    local txt
+
+    saveFiles "$POLYBARPATH" || {
+
+        echo -e "\n$0: ${RED} $(gettext 'Failed to save Polybar configuration file.') $HOME/$POLYBARPATH ${NC} \n"  >&2
+
+        return 1
+    }
+    txt="\n$(gettext 'Polybar Configuration'):  ~/$POLYBARPATH \n"
+
+    debug "\n $(gettext 'Saved') $txt"
+
+
+    # Na hora de restaurar o arquivo ele pegar esse valor abaixo:
+
+    echo "[Polybar] $POLYBARPATH" >> "$SETTINGS"
+
+    echo -e "$txt" >> "$LISTMSG"
+
+else
+
+    # find /etc/  -iname config.ini
+
+    echo -e "\n$0: ${RED} $(gettext "O arquivo $HOME/$POLYBARPATH não existe.\n\nNo Void Linux, o Polybar fornecer um arquivo de configuração global em /etc/polybar/config.ini \n\n$ cp /etc/polybar/config.ini  $HOME/$POLYBARPATH") ${NC} \n"  >&2
+
+fi
+
+
+
+else
+
+    echo -e "\n$0: ${RED} $(gettext "A pasta $HOME/.config/polybar não existe.") ${NC} \n"  >&2
+
+fi
 
 
 }
@@ -5511,19 +5823,68 @@ saveFiles ".fluxbox/init" || {
 
 # Copie a seção <theme> de bl-rc.xml para obtheme.txt
 
+
+# Resumo
+
+# O objetivo dessa função é extrair o tema configurado no OpenBox de um arquivo de 
+# configuração XML e salvar essa informação em outros arquivos para uso posterior. Ela 
+# realiza verificações de erros durante o processo e gera mensagens de depuração para 
+# ajudar no diagnóstico de possíveis problemas.
+
+
+
 function getOBtheme(){
+
 
     local obfile obtheme xpath
 
+
+    # Declaração de variáveis:
+
+    # obfile: Define o caminho do arquivo onde o tema será salvo ($CONFIGDIR/obtheme.txt).
+
     obfile="$CONFIGDIR/obtheme.txt"
+
+
+
+    # RCFILE: Arquivo de configuração do OpenBox
+
+
+# Verificação do Arquivo de Configuração:
+
+# A função começa verificando se o arquivo de configuração do OpenBox ($RCFILE) existe e 
+# é legível. Se não for encontrado, a variável RCFILE é alterada para um valor de fallback 
+# ($OLDRCFILE), e uma mensagem de depuração é registrada.
+
     [[ -r $RCFILE ]] || {
+
         RCFILE="$OLDRCFILE"
-        debug "Getting openbox theme from $OLDRCFILE instead of $RCFILE"
+
+        message=$(gettext 'Getting OpenBox theme from %s instead of %s.')
+
+        debug "$(printf "$message"  "$OLDRCFILE" "$RCFILE" )"
+
     }
+
+
+
+# Verificação da Existência do Arquivo de Configuração:
+
+# Caso o arquivo de configuração ($RCFILE) ainda não seja encontrado ou não seja legível 
+# após a tentativa de fallback, uma mensagem de erro é exibida e a função retorna um erro (1).
+
     [[ -r $RCFILE ]] || {
-        echo "$0: Openbox config file $RCFILE not found" >&2
+
+        message=$(gettext 'OpenBox config file %s not found.')
+
+        echo -e "\n$0: ${RED}$(printf "$message"  "$RCFILE" ) ${NC} \n"  >&2
+
         return 1
     }
+
+
+
+
     xsl='<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ob="http://openbox.org/3.4/rc">
   <xsl:output method="xml" encoding="UTF-8" omit-xml-declaration="yes" />
@@ -5545,36 +5906,91 @@ function getOBtheme(){
 </xsl:stylesheet>
 '
 
-# Alterado de xmlstarlet para xml
+
+# Transformação XSLT (Extensible Stylesheet Language Transformations):
+
+# Define um documento XSLT que transforma a configuração do OpenBox, extraindo apenas a 
+# parte relacionada ao tema. A transformação utiliza o comando xmlstarlet transform para 
+# aplicar a transformação XSLT e salvar a saída no arquivo $obfile.
+
 
     xmlstarlet transform <(cat <<<"$xsl") "$RCFILE" > "$obfile" || return 1
 
+
+# Verificação do Arquivo de Tema:
+
+# Após a transformação, o script verifica se o arquivo de tema ($obfile) foi criado e 
+# contém dados válidos. Se o arquivo estiver vazio ou não puder ser gerado, uma mensagem 
+# de erro é exibida e a função retorna um erro (1).
+
+
     [[ -s $obfile ]] || {
 
-        echo "$0: $(gettext 'Failed to generate Openbox theme settings on') $obfile" >&2
+        echo "$0: ${RED}$(gettext 'Failed to generate Openbox theme settings on') $obfile ${NC}" >&2
 
         return 1
 
     }
 
-    # $obfile has no namespace declarations, so '_:' syntax unnecessary
+
+    # $obfile não tem declarações de namespace, então a sintaxe '_:' é desnecessária.
+
+
+    # xpath: Caminho XPATH usado para localizar o nome do tema no arquivo XML de configuração do OpenBox.
+
     xpath='/theme/name/text()'
 
-# Alterado de xmlstarlet para xml
+
+
+    # obtheme: Variável onde será armazenado o nome do tema do OpenBox.
+
+
+# Extração do Nome do Tema:
+# 
+# Usa o comando xmlstarlet sel para aplicar um XPath no arquivo de tema ($obfile) e 
+# extrair o nome do tema do OpenBox. O XPath /theme/name/text() é utilizado para 
+# localizar e extrair o nome do tema.
 
     obtheme=$(xmlstarlet sel --template --value-of "$xpath" "$obfile")
+
+
+# Verificação do Nome do Tema:
+#
+# Se o nome do tema não for encontrado (ou seja, se a variável obtheme estiver vazia), 
+# uma mensagem de erro é exibida e a função retorna um erro (1).
+
     [[ -n $obtheme ]] || {
 
-        echo "$0: $(gettext 'Failed to determine the name of the Openbox theme to save')" >&2
+        echo "$0: ${RED}$(gettext 'Failed to determine the name of the Openbox theme to save') ${NC}" >&2
 
         return 1
     }
+
+
+
+# Armazenamento das informações:
+# 
+#  O nome do tema é então salvo em dois arquivos:
+# 
+#  $LISTMSG: Um arquivo de mensagens, com a linha Openbox Theme: <nome_do_tema>.
+# 
+#  $SETTINGS: Um arquivo de configurações, com a linha [OBTHEME] <nome_do_tema>.
+
 
     echo "$(gettext 'Openbox Theme'):  $obtheme" >> "$LISTMSG"
 
     echo "[OBTHEME] $obtheme" >> "$SETTINGS"
 
-    debug "seção do tema Openbox (${obtheme}) copiada de $RCFILE"
+
+
+# Mensagens de depuração:
+# 
+# Por fim, uma mensagem de depuração é registrada, indicando que a seção do tema foi 
+# copiada com sucesso a partir do arquivo de configuração original.
+
+    message=$(gettext 'Openbox theme section (%s) copied from %s.')
+
+    debug "$(printf "$message"  "${obtheme}" "$RCFILE" )"
 
 }
 
@@ -6554,20 +6970,52 @@ function getJgmenuContent(){
 
 # ----------------------------------------------------------------------------------------
 
+
+# Para tirar uma captura de tela (screenshot) da área de trabalho.
+
+
+# Resumo:
+# 
+# Essa função automatiza a captura de uma tela com a capacidade de ocultar programas 
+# específicos (como Conky e Tint2), minimizar janelas, e realizar ações de interface 
+# gráfica antes de realizar a captura de tela. Após a captura, ele restaura a área de 
+# trabalho ao estado anterior.
+# 
+# É útil em casos onde o usuário deseja tirar uma captura de tela sem que determinados 
+# elementos da interface (como barras de tarefas ou painéis) apareçam na imagem final.
+
+
+
 function getScrot(){
 
 
-# Chama a função verificar_virtualbox para identificar se esta usando esse script no VirtualBox
+# A função verificar_virtualbox é chamada, para verificar se o script está sendo executado 
+# em uma máquina virtual (VirtualBox).
 
 verificar_virtualbox
 
 
+    # Exibe uma mensagem de debug indicando que está se preparando para tirar a captura de tela.
+
     debug "\n $(gettext 'Preparing to take a screenshot...')"
+
 
     local conkyFLAG tint2FLAG currDesktop scrot mons hiddenWins
 
+
+
+# ----------------------------------------------------------------------------------------
+
+# Verificação e ocultação de Conky e Tint2:
+
+# O script verifica se o Conky (uma ferramenta para exibir informações na área de trabalho) 
+# e o Tint2 (um painel de tarefas) devem ser ocultados antes de tirar a captura de tela. Se 
+# estiverem ativados, o script faz o backup das suas sessões, oculta esses programas e os 
+# mata para que não apareçam na captura de tela.
+
     conkyFLAG=1
     tint2FLAG=1
+
 
     grep -q "CONKY" "$SETTINGS" || {
 
@@ -6596,12 +7044,18 @@ verificar_virtualbox
         safeKill tint2
     }
 
+# ----------------------------------------------------------------------------------------
+
 
     currDesktop=$(xdotool get_desktop)
 
     debug "$(gettext 'Current desktop is') $currDesktop"
 
     scrot="$USRCONFIGPATH/$NEWNAME/${NEWNAME}.jpg"
+
+
+# Obtém o número de monitores conectados (mons) e as dimensões da tela. Dependendo se há 
+# um ou mais monitores, ajusta as coordenadas do mouse e a posição dos menus.
 
     mons=$(xrandr -q | grep -c " connected")    # Número de monitores
 
@@ -6626,6 +7080,10 @@ verificar_virtualbox
     menuY=$(( (screenH/20)*4 ))
 
 
+
+# O script minimiza todas as janelas visíveis na área de trabalho, exceto aquelas que 
+# são "fixas" (por exemplo, Conkys).
+
     debug "$(gettext 'minimizing open windows')"
 
 
@@ -6646,6 +7104,10 @@ verificar_virtualbox
 
     done
 
+
+# Executa o lxappearance (uma ferramenta gráfica para modificar o tema e aparência do 
+# sistema) e simula movimentos do mouse e pressionamento de teclas para navegar através 
+# de menus (como no caso de BunsenLabs ou Openbox).
 
     # Iniciar lxappearance
 
@@ -6711,14 +7173,33 @@ verificar_virtualbox
 
     esac
 
+
+# ----------------------------------------------------------------------------------------
+
+# Execução da captura de tela:
+
+# A captura de tela é feita usando o comando scrot, que tira uma captura da tela com um 
+# efeito de miniatura de 9% do tamanho real.
+
+
     debug "$(gettext 'Taking a screenshot...')"
 
 
     # Pegue o scrot
 
-    scrot -t 9 "$scrot"    # miniatura do scrot @9% em tamanho real
+    scrot -t 9 "$scrot"    # Miniatura do scrot @9% em tamanho real
 
     sleep 0.5
+
+# ----------------------------------------------------------------------------------------
+
+# Restaurando a área de trabalho após a captura:
+
+#     O script move o mouse para simular a saída do menu ou ação do usuário.
+#     Fecha o lxappearance.
+#     Restaura as janelas que haviam sido minimizadas anteriormente.
+#     Se o Conky ou Tint2 foram ocultados, as sessões anteriores são restauradas.
+
 
     debug "$(gettext 'Restoring desktop')"
 
@@ -6747,7 +7228,14 @@ verificar_virtualbox
     done
 
 
+
+# Limpeza e finalização:
+
+# O script limpa os arquivos temporários gerados (como os arquivos de sessão do Conky e Tint2).
+
+
     # Se conkys ou tint2s foram mortos, restaurar sessão em execução anterior
+
 
     ((conkyFLAG)) || {
 
@@ -6778,6 +7266,7 @@ verificar_virtualbox
 
 # Escolha as configurações do terminal para salvar, com base no que é x-terminal-emulator
 # define termfile e pickterm, local dentro de saveSettings()
+
 
 function checkTerm(){
 
@@ -6840,6 +7329,7 @@ function saveSettings(){
         "$PICKCONKY"
         "$PICKTINT"
         "$PICKPLANK"
+        "$PICKPOLYBAR"
         "$PICKobmenugenerator"
         "$PICKDMENU"
         "$PICKROFI"
@@ -6877,14 +7367,19 @@ function saveSettings(){
 
             "$PICKGTK"  )   getGTKtheme
                             ;;
+
             "$PICKBG"   )   getBg
                             ;;
+
             "$PICKCONKY")   getConky
                             ;;
+
             "$PICKTINT" )   getTint
                             ;;
+
             "$PICKPLANK" )  getPlank
                             ;;
+
             "$PICKobmenugenerator" )  getobmenu-generator
                             ;;
 
@@ -6896,19 +7391,29 @@ function saveSettings(){
 
             "$PICKLDM"  )   getLightdm
                             ;;
+
             "$PICKSDDM" )   getSDDM
                             ;;
+
             "$PICKX"    )   getXconfig
                             ;;
+
             "$PICKBASH" )   getBashRC
                             ;;
+
             "$PICKCOMP" )   getComp
                             ;;
+
             "$PICKJGMENU")  getJgmenu
                             ;;
+
             "$PICKJGMENUCONT") getJgmenuContent
                             ;;
+
             "$pickterm" )   getTerminal "$termfile" "$pickterm"
+                            ;;
+
+            "$PICKPOLYBAR" )  getPolybar
                             ;;
 
             *           )   echo "$0: $(gettext 'Unknown configuration value in saveSettings function')" >&2
@@ -9407,9 +9912,57 @@ fi
 
 
 
-        echo -e "\n$(gettext 'Reloading Plan settings...')\n"
+        echo -e "\n$(gettext 'Reloading Plank settings...')\n"
 
         pkill plank ; plank 1>/dev/null 2>/dev/null &
+
+    
+
+} 
+
+# ----------------------------------------------------------------------------------------
+
+# Restaurar as configuração do Polybar ~/.config/polybar/config
+
+function restorePolybar(){ 
+
+
+    [[ -e "$THEMEPATH/user/$POLYBARPATH" ]] || {
+
+
+        message=$(gettext 'Unable to restore Polybar, file %s does not exist.')
+
+        echo -e "\n$0: $(printf "$message" "$THEMEPATH/user/$POLYBARPATH" ) ${RED} \n ${NC}" >&2
+
+
+        return 1
+    }
+
+
+
+        echo -e "\n$(gettext 'Restored Polybar...')\n"
+
+        mkdir -p ~/.config/polybar/
+
+ 
+        cp -r $THEMEPATH/user/$POLYBARPATH ~/.config/polybar/  && echo -e "\n${GREEN}$(gettext 'Restored Polybar [OK]') ${NC}\n" || { # restoreFiles irá restaurar todo o diretório com o conteúdo
+
+
+        message=$(gettext 'Failed to apply file %s in %s.')
+
+        echo -e "\n$0: ${RED} $(printf "$message" "$THEMEPATH/user/$POLYBARPATH" "$HOME/.config/polybar") \n ${NC}" >&2
+
+
+        return 1
+
+        }
+
+
+
+
+        echo -e "\n$(gettext 'Reloading Polybar settings...')\n"
+
+        pkill polybar ; polybar 1>/dev/null 2>/dev/null &
 
     
 
@@ -10424,6 +10977,13 @@ restoreSettings() {
                                 ;;
             '')                 :
                                 ;;
+
+
+            "[POLYBAR]"     )   labels+=("$PICKPOLYBAR")
+                                values["$PICKPOLYBAR"]="$VAL"
+
+                                ;;
+
             *               )   
 
                                 message=$(gettext 'Ignoring unknown value: %s in %s')
@@ -10644,16 +11204,27 @@ restoreSettings() {
 
 
             "$PICKGTK"      )   restore_gtk="${VAL:-true}"
+
                                 ;;
+
             "$PICKICONS"    )   restore_icons="${VAL:-true}"
+
                                 ;;
+
             "$PICKBG"       )   restoreBg "$VAL"
+
                                 ;;
+
             "$PICKCONKY"    )   restoreConky "$VAL"
+
                                 ;;
+
             "$PICKTINT"     )   restoreTint2 "$VAL"
+
                                 ;;
+
             "$PICKPLANK"    )   restorePlank "$VAL"
+
                                 ;;
 
            # Erro aqui
@@ -10663,6 +11234,7 @@ restoreSettings() {
 
 
             "$PICKDMENU"    )   restoreFiles "$DMENU"
+
                                 ;;
 
             "$PICKROFI"     )   
@@ -10681,18 +11253,25 @@ restoreSettings() {
                                 ;;
 
             "$PICKLDM"      )   restoreLightdm
+
                                 ;;
 
             "$PICKSDDM"     )   restoreSDDM
+
                                 ;;
 
             "$PICKX"        )   restoreFiles "$XFILE"
                                 xrdb ~/.Xresources
+
                                 ;;
+
             "$PICKBASH"     )   restoreFiles "$BASHRC"
+
                                 ;;
+
             "$PICKJGMENU"   )   restoreFiles "$JGMENURC"
                                 jgmenu_sync=false # não há necessidade de sincronização de tema openbox ou gtk, o tema é fornecido em $JGMENURC
+
                                 ;;
 
            # Isso deve permitir que você restaure os arquivos prepend.csv e append.csv do jgmenu.
@@ -10713,6 +11292,7 @@ restoreSettings() {
 
                                     restoreFiles "$JGMENUCONT2"
                                 }
+
                                 ;;
 
 
@@ -10723,14 +11303,24 @@ restoreSettings() {
 
                                 ;;
 
+            "$PICKPOLYBAR"    )   
+
+                                  restorePolybar "$VAL"
+                                  
+                                ;;
+
+
             *               )   if [[ $VAL = '%dconf%'* ]] # dconf directories come prefixed with %dconf% in checkTerm (and others in future?)
                                 then
                                     restoreDconf "${VAL#'%dconf%'}" "$label"
                                 else
                                     restoreFiles "$VAL"
                                 fi
+
                                 ;;
+
         esac
+
     done <<< "$CHOICE"
 
 
@@ -10771,32 +11361,134 @@ restoreSettings() {
 
 # ----------------------------------------------------------------------------------------
 
-# used in displayBlobs() below and intro()
-# NEWNAME CONFIGDIR and CONFIGDIR_BKP are globals set by setName()
+
+# Usado em displayBlobs() abaixo e intro()
+
+# NEWNAME CONFIGDIR e CONFIGDIR_BKP são globais definidos por setName()
+
+
+
+# Resumo:
+# 
+# A função saveNewBlob realiza uma série de tarefas para salvar configurações, garantir 
+# que certos processos sejam reiniciados, e fornecer feedback ao usuário:
+# 
+#     Define processos que precisam ser reiniciados após salvar as configurações.
+#     Configura um nome para o arquivo de configuração a ser salvo.
+#     Salva as configurações em um arquivo.
+#     Exibe uma mensagem de confirmação para o usuário.
+#     Remove backups temporários, se existirem.
+#     Reinicia certos processos se necessário (como xfdesktop), utilizando o comando 
+# bl-restart.
+# 
+# Essencialmente, essa função é responsável por salvar configurações, notificar o usuário 
+# e garantir que a aplicação ou o sistema continue funcionando corretamente, incluindo o 
+# reinício de processos específicos.
+
+
 
 function saveNewBlob() {
-    need_restart=( xfdesktop ) # Hack because xfdesktop sometimes gets confused after getScrot - can add others if necessary.
+
+
+# Definição da variável need_restart:
+# 
+# A variável need_restart é definida com o valor xfdesktop. Isso é um "hack" mencionado 
+# no código, pois o xfdesktop pode ficar confuso após a execução do comando getScrot. 
+# Essa lista pode ser expandida para incluir outros processos que também necessitam ser 
+# reiniciados.
+
+    need_restart=( xfdesktop ) # Hack porque o xfdesktop às vezes fica confuso após o getScrot - você pode adicionar outros se necessário.
+
+
+# Chamada da função setName:
+# 
+# A função setName é chamada, para configurar o nome do arquivo de configuração que será 
+# salvo. Se setName falhar (retornar um erro), a função saveNewBlob retorna um erro (1).
+
     setName || return 1
 
-    debug "\n  Salvando configurações como $NEWNAME"
+
+# Exibição de mensagem de depuração:
+# 
+# Uma mensagem de depuração é criada, informando que as configurações estão sendo salvas 
+# sob o nome contido na variável NEWNAME. O comando debug exibe a mensagem formatada.
+
+     message=$(gettext 'Saving settings as %s.')
+
+    debug "\n $(printf "$message"  "$NEWNAME")"
+
+
+# Chamada da função saveSettings:
+
+# A função saveSettings é chamada para salvar as configurações. Se essa função falhar, a 
+# execução da função saveNewBlob é interrompida com um retorno de erro (1).
 
     saveSettings || return 1
+
+
+   # Chamada de getScrot:
+   #
+   # O comando getScrot é executado para a capturas de tela.
+
     getScrot
-    yad_prompt "As configurações foram salvas como <b>$NEWNAME</b>" --image="gtk-save" "$OK"
-    if [[ -d $CONFIGDIR_BKP ]];then
+
+
+# Mensagem de confirmação para o usuário:
+# 
+# A função yad_prompt exibe uma mensagem de confirmação usando o utilitário yad. A 
+# mensagem, que indica que as configurações foram salvas com sucesso, é exibida para 
+# o usuário. A variável NEWNAME é formatada em negrito.
+
+
+    message=$(gettext 'Settings were saved with %s.')
+
+    yad_prompt "$(printf "$message" "<b>$NEWNAME</b>" )" --image="gtk-save" "$OK"
+
+
+
+# Remoção de Backup Temporário:
+# 
+# Se a pasta de backup temporário ($CONFIGDIR_BKP) existir, ela é removida usando o 
+# comando rm -rf. Uma mensagem de depuração é registrada informando que o backup 
+# temporário foi deletado.
+
+
+    if [[ -d "$CONFIGDIR_BKP" ]];then
+
         rm -rf "$CONFIGDIR_BKP"
 
-        debug "\n  Backup temporário de $CONFIGDIR excluído.\n"
+        message=$(gettext 'Temporary backup of %s deleted.')
+
+        debug "\n$(printf "$message" "$CONFIGDIR") \n"
 
     fi
+
+
+
+
+# Reinício de Processos Específicos:
+# 
+# Se o comando bl-restart estiver disponível (verificado com hash bl-restart), o script 
+# irá tentar reiniciar os processos definidos na variável need_restart. Para cada processo 
+# listado em need_restart, ele verifica se o processo está em execução 
+# (pgrep -x -u "$USER" "$i"), e se o processo estiver ativo, o comando bl-restart é chamado 
+# para reiniciar esse processo.
+
     hash bl-restart && {
+
         for i in "${need_restart[@]}"
         do
-            if pgrep -x -u "$USER" "$i" >/dev/null ; then # avoid noisy "not running" messages from bl-restart
+            if pgrep -x -u "$USER" "$i" >/dev/null ; then # Evite mensagens barulhentas de "não está em execução" do bl-restart
+
                 bl-restart "$i"
+
             fi
         done
+
     }
+
+
+
 }
 
 
@@ -10925,12 +11617,13 @@ differ () {
 # ----------------------------------------------------------------------------------------
 
 
-########################################################################
+##########################################################################################
 
 
-######## Main BLOB list display function ###############################
+##################### Função de exibição da lista principal do BLOBs #####################
 
-# sets globals THEMEPATH and BKP_SFX (via restoreSettings) for restore functions
+
+# Define os globais THEMEPATH e BKP_SFX (via restoreSettings) para funções de restauração.
 
 
 function displayBlobs(){
@@ -11093,21 +11786,43 @@ translated_text=$(gettext 'Double-click the highlighted selection or use the "En
         case $RET in
 
             0)  sameFiles "$CURRENTSESSDIR/user" "$HOME" || {
-                    while true; do
-                        if [[ -d $CURRENTSESSDIR ]]; then
-                            TEXT="Você pode ter modificado a aparência da sua área de trabalho desde que ela foi salva como <b>${CURRENTSESSION}</b>.
-Esses arquivos agora são diferentes:
 
- ${difflist[*]/%/\\n}
-Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
+                    while true; do
+
+                        if [[ -d $CURRENTSESSDIR ]]; then
+
+
+#                            TEXT="Você pode ter modificado a aparência da sua área de trabalho desde que ela foi salva como <b>${CURRENTSESSION}</b>.
+# Esses arquivos agora são diferentes:
+
+# ${difflist[*]/%/\\n}
+# Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
+
+
+        message=$(gettext 'You may have changed the appearance of your desktop since it was saved as %s.\nThese files are now different:\n\n %s\nDo you want to save your current session before applying %s?')
+
+
+                            TEXT="$(printf "$message"  "<b>${CURRENTSESSION}</b>" "${difflist[*]/%/\\n}" "<b>${themename}</b>" )"
+
+
                             yad_question "$TEXT" --button="$(gettext 'Save settings first')":2 --button="$(gettext 'No, apply now')":0 --button="$(gettext 'See differences')":3 --button="$(gettext 'Cancel')":1
+
+
                         else
-                            TEXT="Parece que você não salvou a aparência atual da sua área de trabalho.
-Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
+
+#                            TEXT="Parece que você não salvou a aparência atual da sua área de trabalho.
+# Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
+
+
+                            message=$(gettext "It looks like you haven't saved your current desktop look.\nDo you want to save your current session before applying %s?")
+
+                            TEXT="$(printf "$message" "<b>${themename}</b>")"
+
 
                             yad_question "$TEXT" --button="$(gettext 'Save settings first')":2 --button="$(gettext 'No, apply now')":0 --button="$(gettext 'Cancel')":1
 
                         fi
+
 
                         case $? in
 
@@ -11161,7 +11876,9 @@ Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
                             ;;
 
                         esac
+
                     done
+
                 }
 
 
@@ -13260,6 +13977,79 @@ tint2conf
 
 }
 
+# ----------------------------------------------------------------------------------------
+
+configurar_polybar() {
+
+
+echo "
+$(gettext 'Configure Polybar')
+"
+
+
+if [ -f $HOME/$POLYBARPATH ]; then
+
+
+        xdg-open "$HOME/$POLYBARPATH"  2>/dev/null
+
+
+
+# ----------------------------------------------------------------------------------------
+
+# Perguntar ao usuário se ele deseja reiniciar o Polybar
+
+if yad --center --title="$(gettext 'Restart Polybar')" --question --text="$(gettext 'Do you want to restart Polybar?') " --width="300" --buttons-layout=center --button="$(gettext 'No')":1  --button="$(gettext 'Yes')":0 ; then
+
+
+    # Se o usuário clicar em "OK" (sim), reinicia o Polybar
+
+    echo -e "\n$(gettext 'Reloading Polybar settings...')\n"
+    
+    # Reiniciar o Polybar
+
+#         pkill polybar ; polybar 1>/dev/null 2>/dev/null &
+
+    pkill polybar
+
+    polybar example 1>/dev/null 2>/dev/null &
+
+else
+
+    # Se o usuário clicar em "Cancelar" (não), não faz nada
+
+    echo " $(gettext 'Action canceled. Polybar was not restarted.')"
+fi
+
+
+# ----------------------------------------------------------------------------------------
+
+
+
+else
+
+
+    message=$(gettext 'Polybar configuration file %s does not exist.')
+
+    echo -e "\n$(printf "$message" "$HOME/$POLYBARPATH")\n"
+
+    echo -e "\n$0: ${RED}$(printf "$message" "$HOME/$POLYBARPATH") ${NC} \n"
+
+    yad_warning "$(printf "$message" "$HOME/$POLYBARPATH")"
+
+    clear
+
+    exit 1
+
+fi
+
+
+
+
+
+
+
+
+}
 
 # ----------------------------------------------------------------------------------------
 
@@ -13346,10 +14136,11 @@ retorno=$(yad \
 "$(gettext 'Configure tint2')" "6" \
 "$(gettext 'Edit OpenBox Theme')" "7" \
 "$(gettext 'Edit Rofi Theme')" "8" \
+"$(gettext 'Configure Polybar')" "9" \
 "$(gettext 'Exit')" "1" \
 --separator="|" \
 --no-buttons \
---width="600" --height="300" \
+--width="600" --height="330" \
 2> /dev/null)
 
 
@@ -13565,6 +14356,14 @@ fi
         8)  # Configura o tema do Rofi
 
             configurar_rofi
+
+            clear
+
+            ;;
+
+        9)  # Configurar Polybar
+
+            configurar_polybar
 
             clear
 
