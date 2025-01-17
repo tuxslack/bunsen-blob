@@ -763,6 +763,9 @@ check_program "xrandr"                "$(gettext 'xrandr program is not installe
 # check_program "polybar"               "$(gettext 'polybar program is not installed.')"
 
 
+check_program "meld"                 "$(gettext 'meld program is not installed.')"
+
+
 # ----------------------------------------------------------------------------------------
 
 # Exibe o conteúdo do arquivo /etc/os-release para depuração
@@ -11559,14 +11562,20 @@ function sameFiles() {
 differ () {
 
     local title firstfile secondfile diffcmd
+
     if [[ $1 = '--title' ]]
     then
         title=$2
         shift 2
     fi
+
     firstfile=$1
+
     secondfile=$2
-    # if a GUI diff is available, use that instead
+
+
+    # Se uma interface gráfica estiver disponível, use-a
+
     for gui in meld kompare diffuse
     do
         hash "$gui" 2>/dev/null && {
@@ -11574,6 +11583,8 @@ differ () {
             return
         }
     done
+
+
     diffcmd=(colordiff -s -u)
     type colordiff >/dev/null 2>&1 || diffcmd=(diff -s -u)
     diffcmd+=("$firstfile" "$secondfile")
@@ -11791,6 +11802,10 @@ translated_text=$(gettext 'Double-click the highlighted selection or use the "En
 
                         if [[ -d $CURRENTSESSDIR ]]; then
 
+# Simular o problema:
+
+# Salvar o tema e depois altera algum arquivo que esta na sua $HOME para depois restaura  ai vai aparece esse aviso.
+
 
 #                            TEXT="Você pode ter modificado a aparência da sua área de trabalho desde que ela foi salva como <b>${CURRENTSESSION}</b>.
 # Esses arquivos agora são diferentes:
@@ -11799,13 +11814,28 @@ translated_text=$(gettext 'Double-click the highlighted selection or use the "En
 # Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
 
 
-        message=$(gettext 'You may have changed the appearance of your desktop since it was saved as %s.\nThese files are now different:\n\n %s\nDo you want to save your current session before applying %s?')
+                           # Mensagem com \n
+
+                            # message=$(gettext "You may have changed the appearance of your desktop since it was saved as %s.\nThese files are now different:\n\n %s\nDo you want to save your current session before applying %s?")
 
 
-                            TEXT="$(printf "$message"  "<b>${CURRENTSESSION}</b>" "${difflist[*]/%/\\n}" "<b>${themename}</b>" )"
+                            # Sintaxe correta para quebras de linha no arquivo .sh com base no arquivo .po
 
+                            message=$(gettext "You may have changed the appearance of your desktop since it was saved as %s.
+These files are now different:
+
+ %s
+Do you want to save your current session before applying %s?")
+
+                            # Preenchendo as variáveis com os valores reais
+
+                            TEXT=$(printf "$message"  "<b>${CURRENTSESSION}</b>" "${difflist[*]/%/\\n}" "<b>${themename}</b>")
+
+
+                            # Passando a mensagem formatada para a função yad_question
 
                             yad_question "$TEXT" --button="$(gettext 'Save settings first')":2 --button="$(gettext 'No, apply now')":0 --button="$(gettext 'See differences')":3 --button="$(gettext 'Cancel')":1
+
 
 
                         else
@@ -11814,12 +11844,27 @@ translated_text=$(gettext 'Double-click the highlighted selection or use the "En
 # Você deseja salvar sua sessão atual antes de aplicar <b>${themename}</b>?"
 
 
-                            message=$(gettext "It looks like you haven't saved your current desktop look.\nDo you want to save your current session before applying %s?")
+                            # Mensagem com \n
 
-                            TEXT="$(printf "$message" "<b>${themename}</b>")"
 
+                            # Sintaxe correta para quebras de linha no arquivo .sh com base no arquivo .po
+
+
+                            # message=$(gettext "It looks like you haven't saved your current desktop look.\nDo you want to save your current session before applying %s?")
+
+                            message=$(gettext "It looks like you haven't saved your current desktop look.
+Do you want to save your current session before applying %s?")
+
+
+                            # Preenchendo a variável com o nome do tema
+
+                            TEXT=$(printf "$message" "<b>${themename}</b>")
+
+
+                            # Passando a mensagem formatada para a função yad_question
 
                             yad_question "$TEXT" --button="$(gettext 'Save settings first')":2 --button="$(gettext 'No, apply now')":0 --button="$(gettext 'Cancel')":1
+
 
                         fi
 
@@ -11864,7 +11909,9 @@ translated_text=$(gettext 'Double-click the highlighted selection or use the "En
 
                             ;;
 
-                            3)
+                            3)  
+                                # Mostrando as diferenças dos arquivos (Usa o programa meld)
+
                                 debug "\n $(gettext 'Showing file differences')"
 
                                 for userfile in "${difflist[@]}"; do
@@ -13973,6 +14020,12 @@ tint2conf
 
 # Embora o tint2 não tenha um painel de configuração gráfico embutido, você pode editar o 
 # arquivo tint2rc diretamente ou usar o tint2conf para uma experiência mais amigável.
+
+
+# Os 12 Melhores Temas para seu Tint2
+
+# https://terminalroot.com.br/2021/12/os-12-melhores-temas-para-seu-tint2.html
+# https://github.com/addy-dclxvi/tint2-theme-collections
 
 
 }
